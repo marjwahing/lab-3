@@ -102,22 +102,17 @@ def get_post_then_format_according_to_user(postID: int):
 
 @app.get("/detailed_post/{userID}")
 def get_detailed_post(userID: int):
-    # Get all the posts for the given userID
     posts = get_posts()
     
-    # Filter posts based on the userID
     user_posts = [post for post in posts if post['userId'] == userID]
     
-    # Initialize the data structure to hold the posts and their comments
     detailed_data = {"userID": userID, "posts": []}
 
-    # Iterate over the filtered posts
     for post in user_posts:
-        # For each post, get its comments by postID
+ 
         comments_req = requests.get(f'https://jsonplaceholder.typicode.com/comments?postId={post["id"]}')
         comments = json.loads(comments_req.text)
         
-        # Append the post and its associated comments to the data structure
         detailed_data["posts"].append({
             "post_id": post["id"],
             "post_title": post["title"],
@@ -127,5 +122,4 @@ def get_detailed_post(userID: int):
                           "comment_body": comment["body"]} for comment in comments]
         })
     
-    # Return the formatted data
     return detailed_data
